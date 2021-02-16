@@ -8,6 +8,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TableRow from './components/TableRow'
 
+// dark mode with a hook using local storage => light & dark render different styles
 
 function App() {
 
