@@ -12,24 +12,30 @@ import TableRow from './components/TableRow'
 
 function App() {
 
-  const [data,setData] = useState([])
+  const [marketData,setMarketData] = useState([])
 
   useEffect(() => {
     fetchData()
   }, [])
 
   function fetchData(){
-    fetch("https://apidojo-yahoo-finance-v1.p.rapidapi.com/stock/v2/get-chart?interval=5m&symbol=AMRN&range=1d&region=US", {
-	"method": "GET",
-	"headers": {
-		"x-rapidapi-key": "fe748a5d3dmsh3fbb14115305693p192019jsnb11b82457074",
-		"x-rapidapi-host": "apidojo-yahoo-finance-v1.p.rapidapi.com"
-	}
-})
+
+    fetch('http://api.marketstack.com/v1/tickers?access_key=661b2b31730d1d045e13f3377036353e')
     .then(resp=>resp.json())
-    .then(data=>console.log(data))
+    .then(data=>{
+      console.log(data.data)
+      setMarketData(data.data)
+      // let marketSymbols = data.data.map((ticker)=>(ticker.symbol)).toString()
+      // fetch(`http://api.marketstack.com/v1/intraday?access_key=661b2b31730d1d045e13f3377036353e&symbols=${marketSymbols}`)
+      // .then(resp=>resp.json())
+      // .then(data=>{
+      //   console.log(data.data)
+      //   setMarketData(data.data)
+      // })
+    })
     .catch(err=>console.log(err))
   }
+
 
   return (
     <div className="App">
@@ -40,23 +46,30 @@ function App() {
             <tr>
                 <td>Rank</td>
                 <td>Name</td>
-                <td>Market Cap</td>
+                <td>Open</td>
+                <td>Last</td>
+                <td>Country</td>
+                {/* <td>Market Cap</td>
                 <td>Price</td>
                 <td>Today</td>
-                {/* <td>Price (30 Days)</td>  CHART JS IMPLEMENTATION PLUGIN */}
-                <td>Country</td>
+                <td>Price (30 Days)</td>  CHART JS IMPLEMENTATION PLUGIN
+                <td>Country</td> */}
             </tr>
           </thead>
           <tbody>
-            <TableRow
-              stock={{rank: 1, name: 'Apple', marketCap: 2.273, price: 135.37, today: 0.18, country: 'USA'}}
-            />
-            <TableRow
-              stock={{rank: 2, name: 'Saudi Aramco', marketCap: 2.040, price: 9.28, today: 0.72, country: 'S. Arabia'}}
-            />
-            <TableRow
+            { marketData.length && marketData.map((ticker, i)=>{
+              return(
+                <TableRow 
+                  index={i + 1}
+                  name={ticker.name}
+                  symbol={ticker.symbol}
+                  country={ticker.stock_exchange.country}
+                />
+              )
+            })}
+            {/* <TableRow
               stock={{rank: 3, name: 'Microsoft', marketCap: 1.848, price: 244.99, today: 0.20, country: 'USA'}}
-            />
+            /> */}
           </tbody>
         </Table>
       </Col>
